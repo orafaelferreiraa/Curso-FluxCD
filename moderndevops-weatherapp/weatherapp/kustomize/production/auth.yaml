@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: auth
+  namespace: apps
+stringData:
+  values.yaml: |
+    mysql:
+      auth:
+        username: authuserproduction
+        password: authpasswordproduction
+        database: weatherapproduction
+        createDatabase: true

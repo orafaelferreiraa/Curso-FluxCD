@@ -1,0 +1,106 @@
+---
+apiVersion: ENC[AES256_GCM,data:Vh4=,iv:E/4rGvbny15t1c8rK3mBthRBW7BvazELSVZB/UPVYiE=,tag:nX338CNMlv9FIHIGAEUo+w==,type:str]
+kind: ENC[AES256_GCM,data:mnf2vjY2,iv:3vhThk34ERc5fal/0oBGzEjgzHwKUYct/IbXmtQ5lQ8=,tag:GbLuC7fs6oONhVradVbIAg==,type:str]
+metadata:
+    name: ENC[AES256_GCM,data:ed1ZOMQbcey2N0A=,iv:WiPTYCQQPRBKpAX6WlPIwRw0PLhUbWzEQGw4gRqYixA=,tag:hah/SJ10lrFXRjbtjl2SJQ==,type:str]
+    namespace: ENC[AES256_GCM,data:HnHdsw==,iv:04kH0BVaeqjErtVxAEniH64I8sW+2R5xIIJ/49Iu58s=,tag:Yhsc7ZiglJKmuc4UAp/btQ==,type:str]
+stringData:
+    password: ENC[AES256_GCM,data:E6z9kOHOcT1hbv1MEJU5usiL+INCF8oJ29+eXz4uKwz7QKfpVWv6YQ==,iv:uFKNsUj7yl9ivJfx48ARZW5wD/eEXbjiXyThbhFhI7I=,tag:jXt/FFl20fwdGHdsJgs8hQ==,type:str]
+    username: ENC[AES256_GCM,data:UFfYhytuF0mJK8OregGE6Yzu,iv:vRIaY2i3DNIVBzrMdh/qbCfss8lvYjyHt9sWUeNk2NM=,tag:5rG1a8Vm50O0D2K/l08fEg==,type:str]
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age: []
+    lastmodified: "2024-11-11T23:34:35Z"
+    mac: ENC[AES256_GCM,data:HjEXG7glypziKTXEV4viEG3l3/Gj91wXzTCOSbZwc3LXfdnunxZ1rScLdFXEfpz5B89cMSwSr/3nsws6xzZjZnPdI262qZ+hdXLwNDcasax72/wyGW26b4dV9MlwBMrHhSFdxo9l/RxMwp3g2lJ6qW18m6GhixYM4+00+OLNXcI=,iv:Y81YkMF3miCILY3t8hAA9/Nd3BSNNoZ5On/ttyPx084=,tag:yTqEZgA+fBg8VJloZzEI4w==,type:str]
+    pgp:
+        - created_at: "2024-11-11T23:34:35Z"
+          enc: |-
+            -----BEGIN PGP MESSAGE-----
+
+            hQIMA4T6f+/L9pPbAQ//ZZ/1dLVK8yDq76R0a6A3ZBxzIQiGn1UAHeZu0+kwavy9
+            RIjYZC/Ux/kN47eeONubqw0lfHp4OsSG9Pd8TcpZbm0XIbuuKe1gGXiiq6IXqLI3
+            f2CQiHWiap+R/6aiNXZtKjqvoxuRHPS8lKCHE3qGmZLLGgU2/1xunTjnQad7FZaH
+            pAW+tTmTsCMwlyEMKqE2whosgk++UwQ3m0WQSDrS9tmJZXWMNio5eCELCWSJ+D5r
+            qaDTTV8wBfls1QUmO96zGsFl5jIT6i5tshXCbrqenKoTcej3BTwITCfe513Qpw/a
+            ksS/PyRjuEG/xT50nNnKf5acqJIAz21yQNWOd0Azq6utLq9eooDjqsPAQkZqSCvx
+            wlMQhcxCN0WjDjD+6AidAjhfK1YP2LoDxgQ8sA/6NmPiTxR/vVKzD+QSv5tUA5EP
+            M1Hub4lg4eXS1OBgZFaxacwl/Uum2AtTf8iwxnZLpathfe0tyTQ+e2CGoZlIuThy
+            kiG7Um6o9DaouIC5NWWfbJqJDZQGRhE2DLWHaDEiv9bwB2+oOjmtW36UD+KZJ8ju
+            KczWJp/gEE97KH1Qp3OVOKVOubi2wdYPNghJECtSdoFLZCcn62KNv1TFhv4kt5II
+            aEbNiHLbUvpEWeScMH0jtzkJrVNYIDecfwQUPKzSWH7YX8hvav/pOh9dmtDKUYXS
+            XgHxRyQJh356bDo/Cnqd94/5PxVaTR7E21mMhhde10nNYTpXr1j5thdYOGBoj/7e
+            xnwQR1YOSb+LBEbwsG3Mmkn6mEtFRuOMxfPhsnMgDdDLAOS1wdoDQxVQw7eA1SQ=
+            =hvv3
+            -----END PGP MESSAGE-----
+          fp: 0D2E8108F5F222022B323B8E772525A883C4F05E
+    unencrypted_suffix: _unencrypted
+    version: 3.9.1
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: dev
+  namespace: apps
+spec:
+  interval: 1m0s
+  ref:
+    branch: main
+  secretRef:
+    name: gitlab-auth
+  url: https://github.com/rafaelmaferreira/weatherapp
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: gitlab
+  namespace: apps
+spec:
+  interval: 1m0s
+  secretRef:
+    name: gitlab-auth
+  type: oci
+  url: oci://registry.gitlab.com/abohmeed/myweatherapp
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: dev
+  namespace: apps
+spec:
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-hcvault
+  interval: 1m0s
+  path: ./
+  prune: false
+  serviceAccountName: dev
+  sourceRef:
+    kind: GitRepository
+    name: dev
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: podinfo
+  namespace: apps
+spec:
+  selector:
+    matchLabels:
+      app: podinfo
+  template:
+    metadata:
+    labels:
+      app: podinfo
+  spec:
+    containers:
+      - name: podinfod
+        image: ghcr.io/stefanprodan/podinfo:5.0.0 # {"$imagepolicy" : "flux-system:podinfo"}
+        imagePullPolicy: IfNotPresent
+        ports:
+          - name: http
+            containerPort: 9898
+            protocol: TCP

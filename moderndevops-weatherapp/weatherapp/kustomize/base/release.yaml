@@ -1,0 +1,103 @@
+---
+apiVersion: v1
+kind: Secret
+metadada:
+    name: api-key
+    namespace: apps
+stringData:
+    values.yaml: ENC[AES256_GCM,data:x58Lli3HF/yeMUv/iSgHjtaKDZhxlFXYWk3r+/tGBXd/vV9MfQG2Rcr4OumIHWAY+PuwmymOeXrEWIXyqu8Cy2vAEvR5/rI=,iv:N4ghej4snf0eA6QksBPOFIrNa7cwPFfpuOvHqcGp18k=,tag:9M+qDgLmoIH6Fnz3OHt8WQ==,type:str]
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age18up5lea8wuxaehfexm5gsakhs3e3qscecnjngyvnz609jh4d45qsqgz66k
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBZaWNCejBKOGZMZ21HRWxL
+            NlRiU0pTaCtKNFJRbThWZThLWmhyckwzMW1ZCjNXVklWR3p4Y1pwM01OTVFoSXNu
+            VnM4YW1OeTAzV3JkbTZFMGh3MUxSbDQKLS0tIFExdVZ5QkMwRFE3SEhmdWhsdzRG
+            SndUaVYyazBVNXZISDJLYVc5dEhaV2sKp1y9WFL7/NwITUy60kMjWKt0LBvmjuvk
+            W1Fg+Et++4OuhpKPPFe9+hLrADVXS5FG0H07hW4QyBn4DQI5AmUOJw==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2024-11-11T23:52:54Z"
+    mac: ENC[AES256_GCM,data:nyN//xbUlXFftk1XLzihAC8gN9tW7wn4BrrbIdsYJatWjvItJnrr146iaWbwg+7QURtchV/A7Xvp0BQw9D39lXUx1KWqmaPGZNa8kM2XsllRuX3QgaY33oCz9t/ZJUr0WCMO7vRuX9N30GuhAJAU655DWsJbmHuY2GgB94ipGrU=,iv:f0+o2Sx/C+QEdVRpMgH/1A/hEjtIfGTJOz3+NDiZ+IA=,tag:Bv+S/e/V1KFXvz7nGXvI+A==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData)$
+    version: 3.9.1
+
+---
+apiVersion: helm.toolkit.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: weatherapp-auth
+  namespace: apps
+spec:
+  serviceAccountName: dev
+  interval: 5m
+  chart:
+    spec:
+      verify:
+        provider: cosign
+        secretRef:
+          name: cosign-public-keys
+      chart: weatherapp-auth
+      version: '0.1.0'
+      sourceRef:
+        kind: HelmRepository
+        name: gitlab
+        namespace: apps
+      interval: 1m
+---
+apiVersion: helm.toolkit.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: weatherapp-ui
+  namespace: apps
+spec:
+  serviceAccountName: dev
+  interval: 5m
+  chart:
+    spec:
+      chart: weatherapp-ui
+      version: '0.1.0'
+      sourceRef:
+        kind: HelmRepository
+        name: gitlab
+        namespace: apps
+      interval: 1m
+  values:
+    service:
+      type: ClusterIP
+      port: 3000
+    ingress:
+      enabled: false
+      classname: ""
+      annotations: {}
+      hosts: []
+---
+apiVersion: helm.toolkit.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: weatherapp-weather
+  namespace: apps
+spec:
+  serviceAccountName: dev
+  interval: 5m
+  chart:
+    spec:
+      chart: weatherapp-weather
+      version: '0.1.0'
+      sourceRef:
+        kind: HelmRepository
+        name: gitlab
+        namespace: apps
+      interval: 1m
+  values:
+    service:
+      type: ClusterIP
+      port: 500
+  valuesFrom: 
+    - kind: Secret
+      name: api-key    
